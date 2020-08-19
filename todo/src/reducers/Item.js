@@ -5,7 +5,7 @@ export const CLEAR_COMPLETED = "CLEAR_COMPLETED";
 
 export const initialState = [];
 
-export const itemReducer = (state, action) => {
+export const itemReducer = (state = initialState, action) => {
   const { type, payload } = action;
 
   switch (type) {
@@ -15,9 +15,12 @@ export const itemReducer = (state, action) => {
     case REMOVE_ITEM:
       return state.filter((item) => item.id !== payload);
 
-    // Also marks item as incomplete
     case TOGGLE_ITEM:
-      return state.map((item) => (item.id === payload ? { ...item, completed: !item.completed } : item));
+      return state.map((item) =>
+        item.id === payload
+          ? { ...item, completed: !item.completed, timeCompleted: !item.completed ? Date.now() : null }
+          : item
+      );
 
     case CLEAR_COMPLETED:
       return state.filter((item) => !item.completed);

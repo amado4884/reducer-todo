@@ -1,15 +1,26 @@
 import React, { useReducer, useState } from "react";
 import { itemReducer, initialState, ADD_ITEM, REMOVE_ITEM, TOGGLE_ITEM, CLEAR_COMPLETED } from "./reducers/Item";
 
+import moment from "moment";
+
 import TodoList from "./components/TodoList";
 
 function App() {
-  const [list, dispatch] = useReducer(itemReducer, initialState);
   const [text, setText] = useState("");
+  const [list, dispatch] = useReducer(itemReducer, initialState);
 
   const onSubmit = (e) => {
     e.preventDefault();
-    dispatch({ type: ADD_ITEM, payload: { id: Date.now(), completed: false, text } });
+    dispatch({
+      type: ADD_ITEM,
+      payload: {
+        id: Date.now(),
+        completed: false,
+        text,
+        timeCompleted: null,
+        dueDate: moment().add(1, "second").toDate(),
+      },
+    });
     setText("");
   };
 
@@ -17,12 +28,13 @@ function App() {
     dispatch({ type: TOGGLE_ITEM, payload: id });
   };
 
-  const removeItem = (e) => {
+  const removeItem = (e, id) => {
     e.preventDefault();
-    dispatch({ type: REMOVE_ITEM, payload: Number(e.target.getAttribute("item-id")) });
+    dispatch({ type: REMOVE_ITEM, payload: id });
   };
 
   const clearCompleted = (e) => {
+    e.preventDefault();
     dispatch({ type: CLEAR_COMPLETED });
   };
 
